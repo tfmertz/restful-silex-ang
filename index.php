@@ -13,6 +13,10 @@
     //Create pdo object
     $DB = new PDO('pgsql:host=localhost;dbname=tommertz_tasks;', 'tom', '1234');
 
+    //enable patch and delete requests
+    use Symfony\Component\HttpFoundation\Request;
+    Request::enableHttpMethodParameterOverride();
+
     $app->get('/', function() use ($app) {
         return $app['twig']->render('index.twig');
     });
@@ -32,10 +36,24 @@
         $arr = json_decode($json, true);
 
         //create the new task and add it to the database
-        $task = new Task($arr['task']);
+        $task = new Task($arr['id']);
         $task->save();
 
         return $app->json($app->tasks);
+    });
+
+    $app->patch('/api/tasks/{id}', function($id, Request $req) use ($app) {
+        //grab info, $params comes from the query string, everything else
+        //is from angular's $http data
+        $json = file_get_contents('php://input');
+        $arr = json_decode($json, true);
+        $params = $req->query->all();
+
+        //check if we are completing the task
+        if($params['complete']) {
+            Task::completeTask($id);
+        }
+        return $app->json(Task::findById($id));
     });
 
     $app->run();

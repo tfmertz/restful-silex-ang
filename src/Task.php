@@ -3,8 +3,9 @@
 class Task {
     private $id;
     private $desc;
+    private $complete;
 
-    function __construct($desc, $id = null) {
+    function __construct($desc, $complete = 'f', $id = null) {
         $this->desc = $desc;
         $this->id = $id;
     }
@@ -22,11 +23,17 @@ class Task {
     }
 
     function save() {
-        $st = $GLOBALS['DB']->prepare("INSERT INTO tasks (task) VALUES (:desc) RETURNING id;");
+        $st = $GLOBALS['DB']->prepare("INSERT INTO tasks (task, complete) VALUES (:desc, 'f') RETURNING id;");
         $st->bindParam(':desc', $this->getDesc());
         $st->execute();
         $result_id = $st->fetch(PDO::FETCH_ASSOC);
         $this->setId($result_id['id']);
+    }
+
+    static function completeTask($search_id) {
+        $st = $GLOBALS['DB']->prepare("UPDATE tasks SET complete = 't' WHERE id = :id;");
+        $st->bindParam(':id', $search_id);
+        $st->execute();
     }
 
     static function findById($search_id) {
@@ -34,7 +41,7 @@ class Task {
         $st->bindParam(':id', $search_id);
         $st->execute();
 
-        return $st->fetchAll(PDO::FETCH_ASSOC);
+        return $st->fetch(PDO::FETCH_ASSOC);
     }
 
     static function getAll() {
