@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Twig Template</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body ng-app="silexApp">
+    <div ng-controller="silexCtrl">
+      <div class="container page-header">
+        <h1>Super Silex RESTful To Do List</h1>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>Tasks</h2>
+
+            <ul>
+              <li ng-repeat="item in tasks">{[{item.task}]}</li>
+            </ul>
+
+            <p>
+              <form class="form-inline" ng-submit="addTask(addtask)">
+                <div class="input-group">
+                  <input type="text" class="form-control" ng-model="addtask">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-success">Add Task</button>
+                  </span>
+                </div>
+              </form>
+            </p>
+
+          </div>
+          <div class="col-xs-6">
+            <h2>Silex REST commands</h2>
+            <p><strong>Status:</strong> {[{word}]}</p>
+
+            <p>
+              <button ng-click="getTasks()" class="btn btn-default">Get All Tasks</button>
+            </p>
+
+            <p>
+              <form class="form-inline" ng-submit="getTask(task)">
+                <div class="input-group">
+                  <input type="text" class="form-control" ng-model="task">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Get Single Task</button>
+                  </span>
+                </div>
+              </form>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="js/controller.js"></script>
+  </body>
+</html>
