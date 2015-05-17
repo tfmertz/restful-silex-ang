@@ -45,6 +45,11 @@
         return $app->json(Task::findById($task->getId()));
     });
 
+    //delete the completed tasks
+    $app->delete('/api/tasks', function() use ($app) {
+        return Task::deleteComplete();
+    });
+
     //update a task to completed or incomplete
     $app->patch('/api/tasks/{id}', function($id, Request $req) use ($app) {
         //grab info, $params comes from the query string, everything else

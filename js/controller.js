@@ -121,6 +121,23 @@ angular.module('silexApp', [])
         });
     };
 
+    //delete all completed tasks
+    $scope.deleteAllComplete = function(completedTasks) {
+      $http.delete('/api/tasks')
+        .success(function(data) {
+          console.log(data);
+          $scope.word = "Completed tasks removed";
+          $scope.response = data;
+          //remove the completed tasks from the array
+          completedTasks.forEach(function(element) {
+            if(element.complete) {
+              $scope.removeFromTasks(element);
+            }
+          });
+          console.log(completedTasks);
+        });
+    };
+
     //snips a single task out of the tasks object
     $scope.removeFromTasks = function(task) {
       var index = $scope.tasks.indexOf(task);

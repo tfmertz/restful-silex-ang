@@ -48,6 +48,11 @@ class Task {
         $st->execute();
     }
 
+    static function deleteComplete() {
+        $st = $GLOBALS['DB']->prepare("DELETE FROM tasks WHERE complete = 't';");
+        return $st->execute();
+    }
+
     static function findById($search_id) {
         $st = $GLOBALS['DB']->prepare("SELECT * FROM tasks WHERE id = :id;");
         $st->bindParam(':id', $search_id);

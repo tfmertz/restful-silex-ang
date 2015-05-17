@@ -25,7 +25,11 @@
               </p>
             </div>
 
-            <h2 ng-show="done.length">Completed</h2>
+            <div class="row" ng-show="done.length">
+              <div class="col-xs-12">
+                <h2>Completed <button ng-click="deleteAllComplete(done)" class="btn btn-danger" title="Clear completed"><span class="glyphicon glyphicon-remove"></span></button></h2>
+              </div>
+            </div>
             <div class="" ng-repeat="item in done = (tasks | filter:{complete:true})">
               <p>
                 <button ng-click="removeCompleteTask(item)" class="btn btn-default"><span class="glyphicon glyphicon-arrow-up"></span></button>
