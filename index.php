@@ -10,6 +10,10 @@
         'twig.path' => __DIR__.'/views'
     ));
 
+    $app->register(new Silex\Provider\MonologServiceProvider(), array(
+        'monolog.logfile' => 'php://stderr'
+    ));
+
     //Create pdo object
     $DB = new PDO('pgsql:host=localhost;dbname=tommertz_tasks;', 'tom', '1234');
 
@@ -18,6 +22,7 @@
     Request::enableHttpMethodParameterOverride();
 
     $app->get('/', function() use ($app) {
+        $app['monolog']->addDebug('logging output');
         return $app['twig']->render('index.twig');
     });
 
