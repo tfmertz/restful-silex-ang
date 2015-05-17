@@ -39,7 +39,8 @@
         $task = new Task($arr['id']);
         $task->save();
 
-        return $app->json($app->tasks);
+        //return the task added
+        return $app->json(Task::getAll());
     });
 
     $app->patch('/api/tasks/{id}', function($id, Request $req) use ($app) {
@@ -54,6 +55,15 @@
             Task::completeTask($id);
         }
         return $app->json(Task::findById($id));
+    });
+
+    $app->delete('/api/tasks/{id}', function($id) use ($app) {
+        //get the info
+        $json = file_get_contents('php://input');
+        $arr = json_decode($json, true);
+        Task::deleteTask($id);
+
+        return $id;
     });
 
     $app->run();

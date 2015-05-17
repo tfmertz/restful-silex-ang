@@ -30,7 +30,7 @@ angular.module('silexApp', [])
               $scope.tasks = {};
             } else {
               $scope.word = "Task found";
-              $scope.tasks = data;
+              $scope.tasks = {0: data};
               console.log(data);
             }
           });
@@ -39,9 +39,11 @@ angular.module('silexApp', [])
       }
     };
 
+    //add a single task
     $scope.addTask = function(id) {
       $http.post('/api/tasks', {id: id})
         .success(function(data) {
+          $scope.addtask = null;
           $scope.tasks = data;
           $scope.word = "Added task to array";
         })
@@ -50,22 +52,41 @@ angular.module('silexApp', [])
         });
     };
 
+    //check a task as complete
     $scope.completeTask = function(task) {
-
       //config object
       var config = {
         params: {
           complete: true
         }
       };
-
       $http.patch('/api/tasks/' + task.id, task, config)
         .success(function(data) {
           console.log(data);
-          $scope.word = "Task Completed";
+          $scope.word = "Task completed";
         })
         .error(function(data) {
           $scope.word = "Error, task couldn't be completed";
         });
+    };
+
+    //delete a single tasks
+    $scope.deleteTask = function(task) {
+      $http.delete('/api/tasks/' + task.id)
+        .success(function(data) {
+          console.log(data);
+          $scope.word = "Task deleted";
+          //remove it from the array so it disappears immediately
+          $scope.removeFromTasks(task);
+        })
+        .error(function(data) {
+          $scope.word = "Error, task couldn't be deleted";
+        });
+    };
+
+    //snips a single task out of the tasks object
+    $scope.removeFromTasks = function(task) {
+      var index = $scope.tasks.indexOf(task);
+      $scope.tasks.splice(index, 1);
     };
   });
