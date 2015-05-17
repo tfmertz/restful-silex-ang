@@ -51,10 +51,12 @@
         $params = $req->query->all();
 
         //check if we are completing the task
-        if($params['complete']) {
+        if($params['complete'] == "true") {
             Task::completeTask($id);
+        } else if($params['complete'] == "false") {
+            Task::markIncomplete($id);
         }
-        return $app->json(Task::findById($id));
+        return $app->json(Task::getAll());
     });
 
     $app->delete('/api/tasks/{id}', function($id) use ($app) {

@@ -36,6 +36,12 @@ class Task {
         $st->execute();
     }
 
+    static function markIncomplete($search_id) {
+        $st = $GLOBALS['DB']->prepare("UPDATE tasks SET complete = 'f' WHERE id = :id;");
+        $st->bindParam(':id', $search_id);
+        $st->execute();
+    }
+
     static function deleteTask($search_id) {
         $st = $GLOBALS['DB']->prepare("DELETE FROM tasks WHERE id = :id;");
         $st->bindParam(':id', $search_id);

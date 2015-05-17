@@ -64,13 +64,33 @@ angular.module('silexApp', [])
         .success(function(data) {
           console.log(data);
           $scope.word = "Task completed";
+          $scope.tasks = data;
         })
         .error(function(data) {
           $scope.word = "Error, task couldn't be completed";
         });
     };
 
-    //delete a single tasks
+    //removes a task from the completed list
+    $scope.removeCompleteTask = function(task) {
+      //config object
+      var config = {
+        params: {
+          complete: false
+        }
+      };
+      $http.patch('/api/tasks/' + task.id, task, config)
+        .success(function(data) {
+          console.log(data);
+          $scope.word = "Task marked as incomplete";
+          $scope.tasks = data;
+        })
+        .error(function(data) {
+          $scope.word = "Error, task couldn't be marked incomplete";
+        });
+    };
+
+    //delete a single tasks from the database
     $scope.deleteTask = function(task) {
       $http.delete('/api/tasks/' + task.id)
         .success(function(data) {

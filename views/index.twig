@@ -4,6 +4,7 @@
   <head>
     <title>Twig Template</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" media="screen" charset="utf-8">
   </head>
   <body ng-app="silexApp">
     <div ng-controller="silexCtrl">
@@ -16,13 +17,20 @@
           <div class="col-sm-6">
             <h2>Tasks</h2>
 
-            <div class="" ng-repeat="item in tasks">
+            <div class="" ng-repeat="item in notdone = (tasks | filter:{complete:false})">
               <p>
                 <button ng-click="completeTask(item)" class="btn btn-default"><span class="glyphicon glyphicon-ok text-success"></span></button>
                 <button ng-click="deleteTask(item)" class="btn btn-default"><span class="glyphicon glyphicon-remove text-danger"></span></button>
                 <strong>ID:</strong> {[{item.id}]} <strong>Desc:</strong> {[{item.task}]}
               </p>
+            </div>
 
+            <h2 ng-show="done.length">Completed</h2>
+            <div class="" ng-repeat="item in done = (tasks | filter:{complete:true})">
+              <p>
+                <button ng-click="removeCompleteTask(item)" class="btn btn-default"><span class="glyphicon glyphicon-arrow-up"></span></button>
+                <span class="complete">{[{item.task}]}</span>
+              </p>
             </div>
 
             <p>
