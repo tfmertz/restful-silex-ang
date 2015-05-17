@@ -19,16 +19,20 @@ angular.module('silexApp', [])
     };
 
     $scope.getTask = function(task) {
-      $http.get('/api/tasks/' + task)
-        .success(function(data) {
-          if(Object.keys(data).length === 0) {
-            $scope.word = "Task not found!";
-            $scope.tasks = {};
-          } else {
-            $scope.word = "Task found";
-            $scope.tasks = data;
-          }
-        });
+      if(task) {
+        $http.get('/api/tasks/' + task)
+          .success(function(data) {
+            if(Object.keys(data).length === 0) {
+              $scope.word = "Task not found!";
+              $scope.tasks = {};
+            } else {
+              $scope.word = "Task found";
+              $scope.tasks = data;
+            }
+          });
+      } else {
+        $scope.word = "Task field blank!";
+      }
     };
 
     $scope.addTask = function(task) {

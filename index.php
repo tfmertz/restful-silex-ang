@@ -1,44 +1,39 @@
 <?php
 
     require_once __DIR__.'/vendor/autoload.php';
+    require_once __DIR__.'/src/Task.php';
 
     $app = new Silex\Application();
 
+    // Register twig
     $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'twig.path' => __DIR__.'/views'
     ));
 
-    $app->tasks = array(
-        array("id" => "104", "task" => "Wash the Dog"),
-        array("id" => "106", "task" => "Mow the lawn"),
-        array("id" => "127", "task" => "Feed the chickens")
-    );
+    //Create pdo object
+    $DB = new PDO('pgsql:host=localhost;dbname=tommertz_tasks;', 'tom', '1234');
 
     $app->get('/', function() use ($app) {
         return $app['twig']->render('index.twig');
     });
 
     $app->get('/api/tasks', function() use ($app) {
-
-        return $app->json($app->tasks);
+        //grab tasks from the database
+        return $app->json(Task::getAll());
     });
 
     $app->get('/api/tasks/{id}', function($id) use ($app) {
-
-        $tasks = [];
-        foreach($app->tasks as $task) {
-            if($task['id'] == $id) {
-                array_push($tasks, $task);
-            }
-        }
-        return $app->json($tasks);
+        //get a single task from the database
+        return $app->json(Task::findById($id));
     });
 
     $app->post('/api/tasks', function() use ($app) {
         $json = file_get_contents('php://input');
         $arr = json_decode($json, true);
 
-        array_push($app->tasks, array("id" => rand(100,300), "task" => $arr['task']));
+        //create the new task and add it to the database
+        $task = new Task($arr['task']);
+        $task->save();
 
         return $app->json($app->tasks);
     });
