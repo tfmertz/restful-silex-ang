@@ -10,12 +10,22 @@
         'twig.path' => __DIR__.'/views'
     ));
 
+    // Register monolog to display errors
     $app->register(new Silex\Provider\MonologServiceProvider(), array(
         'monolog.logfile' => 'php://stderr'
     ));
 
+    // Get the database information from heroku
+    $dbopts = parse_url(getenv('DATABASE_URL'));
+
+    $dsn = 'pgsql:dbname='.ltrim($dbopts["path"],'/').';host='.$dbopts["host"];
+
+    $db_config = array(
+        "port" => $dbopts['port']
+    );
+
     //Create pdo object
-    $DB = new PDO('pgsql:host=localhost;dbname=tommertz_tasks;', 'tom', '1234');
+    $DB = new PDO($dsn, $dbopts['user'], $dbopts['pass'], $db_config);
 
     //enable patch and delete requests
     use Symfony\Component\HttpFoundation\Request;
