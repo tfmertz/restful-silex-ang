@@ -28,9 +28,11 @@
 
     $app->get('/api/tasks/{id}', function($id) use ($app) {
         //get a single task from the database
+        //returns false if none are found
         return $app->json(Task::findById($id));
     });
 
+    //create a single new task
     $app->post('/api/tasks', function() use ($app) {
         $json = file_get_contents('php://input');
         $arr = json_decode($json, true);
@@ -40,9 +42,10 @@
         $task->save();
 
         //return the task added
-        return $app->json(Task::getAll());
+        return $app->json(Task::findById($task->getId()));
     });
 
+    //update a task to completed or incomplete
     $app->patch('/api/tasks/{id}', function($id, Request $req) use ($app) {
         //grab info, $params comes from the query string, everything else
         //is from angular's $http data
@@ -56,16 +59,17 @@
         } else if($params['complete'] == "false") {
             Task::markIncomplete($id);
         }
-        return $app->json(Task::getAll());
+        return $app->json(Task::findById($id));
     });
 
+    //delete a single task
     $app->delete('/api/tasks/{id}', function($id) use ($app) {
         //get the info
         $json = file_get_contents('php://input');
         $arr = json_decode($json, true);
         Task::deleteTask($id);
 
-        return $id;
+        return $app->json(array("id" => $id));
     });
 
     $app->run();
